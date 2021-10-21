@@ -1,0 +1,48 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+participant ":DeleteModuleCommand" as DeleteModuleCommand
+participant ":ModuleStorage" as ModuleStorage
+
+-> DeleteModuleCommand : execute(ui, moduleManager)
+activate DeleteModuleCommand
+  ref over DeleteModuleCommand
+    Refer to Delete Module Command Section
+  end
+    |||
+  DeleteModuleCommand -> ModuleStorage : getInstance()
+  activate ModuleStorage
+    |||
+    return :ModuleStorage
+  DeleteModuleCommand -> ModuleStorage : cleanAfterDeleteModule(:String)
+  activate ModuleStorage
+    |||
+    alt file does not exists
+      ref over ModuleStorage
+        File is already deleted.
+        Return.
+      end
+    else else
+      ModuleStorage -> ModuleStorage : cleanAllFilesInclusive(folder:Path)
+      activate ModuleStorage
+      opt folder still exists
+        ModuleStorage -> ModuleStorage
+        note left: IOException thrown
+      end
+    end
+  Deactivate ModuleStorage
+  return
+
+
+  ref over DeleteModuleCommand
+    Refer to Delete Module Command Section
+  end
+return CommandResult(isOk: Boolean)
+Deactivate DeleteModuleCommand
+|||
+
+
+
+
+
+@enduml

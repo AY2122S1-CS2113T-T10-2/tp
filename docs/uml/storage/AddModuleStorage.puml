@@ -14,7 +14,7 @@ activate AddModuleCommand
   AddModuleCommand -> ModuleStorage : getInstance()
   activate ModuleStorage
     |||
-    return ":ModuleStorage"
+    return :ModuleStorage
   AddModuleCommand -> ModuleStorage : createModuleDirectory()
   activate ModuleStorage
     |||

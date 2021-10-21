@@ -1,22 +1,45 @@
 @startuml
 'https://plantuml.com/sequence-diagram
 
+participant ":ModuleManager" as ModuleManager
 participant ":AddModuleCommand" as AddModuleCommand
 participant ":ModuleStorage" as ModuleStorage
 
 -> AddModuleCommand : execute(ui, moduleManager)
 activate AddModuleCommand
-  group ref [Refer to Add Module Section]
-    |||
+  ref over AddModuleCommand
+    Refer to Add Module Command Section
   end
     |||
   AddModuleCommand -> ModuleStorage : getInstance()
   activate ModuleStorage
     |||
     return ":ModuleStorage"
-  Deactivate ModuleStorage
   AddModuleCommand -> ModuleStorage : createModuleDirectory()
-
+  activate ModuleStorage
+    |||
+    alt does file exists
+      ModuleStorage -> : Files.createDirectories(filepath:Path)
+    else else
+      ModuleStorage -> ModuleStorage : deleteAllFilesInDirectory(filepath:Path)
+      activate ModuleStorage
+      Deactivate ModuleStorage
+    end
+    return :Boolean
+  opt [if :Boolean is true]
+    AddModuleCommand -> ModuleManager : setModule(moduleName:String)
+    activate ModuleManager
+    ref over ModuleManager
+      Refer to Set Module Section
+    end
+    Deactivate ModuleManager
+  end
+  ref over AddModuleCommand
+    Refer to Add Module Command Section
+  end
+return CommandResult(isOk: Boolean)
+Deactivate AddModuleCommand
+|||
 
 
 

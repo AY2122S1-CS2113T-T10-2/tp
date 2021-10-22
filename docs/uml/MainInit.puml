@@ -1,0 +1,27 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autoactivate on
+mainframe sd start
+  Terminus -> Terminus: start()
+    create Ui
+    Terminus -> Ui
+    return
+    Terminus -> CommandParser : getInstance()
+      create Command
+      CommandParser -> Command
+      return
+    return CommandParser
+    Terminus -> ModuleStorage : getInstance ()
+    return ModuleStorage
+    Terminus -> ModuleStorage: init (filePath)
+    return
+    Terminus -> ModuleStorage: loadFile()
+    return ModuleManager
+    opt moduleManager == null
+      create ModuleManager
+      Terminus -> ModuleManager
+      return
+    end
+  return
+@enduml

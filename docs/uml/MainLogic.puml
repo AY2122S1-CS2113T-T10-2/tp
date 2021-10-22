@@ -1,0 +1,35 @@
+@startuml
+participant ":Terminus" as Terminus
+participant ":Ui" as Ui
+participant ":CommandParser" as CommandParser
+participant ":ModuleStorage" as ModuleStorage
+participant ":ModuleManager" as ModuleManager
+
+autoactivate on
+
+-> Terminus: run()
+  ref over Terminus, Command: start
+  Terminus -> Terminus : runCommandsUntilExit()
+    loop True
+      Terminus -> Ui : requestCommand ()
+      return String
+      Terminus -> CommandParser: parseCommand(command)
+      return Command
+      Terminus -> Command : execute(ui, moduleManager)
+        create CommandResult
+        Command -> CommandResult
+        return
+     return CommandResult
+      break isExitCommand == true
+      note over Terminus, CommandResult : Breaks out of loop and Returns runCommandsUntilExit()
+      end
+     opt result.getAdditionalData() != null
+      Terminus -> CommandResult: result.getAdditionalData()
+      return CommandParser
+      Terminus -> CommandParser: getWorkspace()
+      return String
+     end
+    end
+  return
+
+@enduml

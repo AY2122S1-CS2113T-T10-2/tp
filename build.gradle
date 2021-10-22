@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'application'
     id 'checkstyle'
+    id 'jacoco'
     id 'com.github.johnrengelman.shadow' version '5.1.0'
 }
 
@@ -26,6 +27,22 @@ test {
         showCauses true
         showStackTraces true
         showStandardStreams = false
+    }
+    finalizedBy jacocoTestReport
+}
+
+task coverage(type: JacocoReport) {
+    sourceDirectories.from files(sourceSets.main.allSource.srcDirs)
+    classDirectories.from files(sourceSets.main.output)
+    executionData.from files(jacocoTestReport.executionData)
+    afterEvaluate {
+        classDirectories.from files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: ['**/*.jar'])
+        })
+    }
+    reports {
+        html.required = true
+        xml.required = true
     }
 }
 

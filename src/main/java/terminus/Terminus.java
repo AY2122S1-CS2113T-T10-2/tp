@@ -59,7 +59,6 @@ public class Terminus {
             this.workspace = "";
             this.moduleStorage = ModuleStorage.getInstance();
             this.moduleStorage.init(DATA_DIRECTORY.resolve(MAIN_JSON));
-            this.moduleManager = new ModuleManager();
             TerminusLogger.info("Loading file...");
             this.moduleManager = moduleStorage.loadFile();
         } catch (IOException e) {

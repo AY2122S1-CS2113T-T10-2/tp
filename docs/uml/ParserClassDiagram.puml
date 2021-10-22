@@ -1,0 +1,23 @@
+@startuml
+
+CommandParser --> "2..*" Command: has >
+Terminus -> "0..1" CommandParser: commandParser
+
+!startsub COMMANDPARSER
+abstract class CommandParser {
+ - workplace: String
+ + CommandParser(workspace: String)
+ + {abstract} parseCommand(command: String): Command
+ + getHelpMenu(): String[]
+}
+!endsub
+class XYZCommandParser extends CommandParser {
+- commandParser: XYZCommandParser
++ parseCommand(command: String): Command
++ {static} getInstance(): XYZCommandParser
+}
+
+class Terminus
+
+!includesub CommandClassDiagram.puml!COMMAND
+@enduml

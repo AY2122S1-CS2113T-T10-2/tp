@@ -21,13 +21,14 @@ NusModule -> "1" ContentManager: linkManager
 NusModule -> "1" ContentManager: questionManager
 
 ModuleManager  --> "0..*" NusModule :  has >
-
+!startsub MODULEMANAGER
 class ModuleManager {
   + getAllModules(): String []
   + getModule(moduleName: String): NusModule
   + removeModule(moduleName: String): void
   + setModule(moduleName: String): void
 }
+!endsub
 
 class NusModule {
   + getContentManager (type: Class<T>): ContentManager<T>

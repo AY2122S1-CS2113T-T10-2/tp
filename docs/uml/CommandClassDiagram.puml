@@ -1,0 +1,38 @@
+@startuml
+
+Command ..> "1" CommandResult: returns >
+Command ..> "1" ModuleManager: modifies
+Command ..> "1" Ui: uses
+CommandResult ..> "0..1" CommandParser: contains >
+CommandParser -> "2..*" Command: has >
+
+!startsub COMMAND
+abstract class Command {
+  # arguments: String
+  - moduleName: String
+  + {abstract} getFormat(): String
+  + {abstract} getHelpMessage(): String
+  + parseArguments(arguments: String): void
+  + {abstract} execute(ui: Ui, moduleManager: ModuleManager): CommandResult
+
+}
+!endsub
+
+class XYZCommand extends Command {
+  + execute(ui: Ui, moduleManager: ModuleManager): CommandResult
+  + getHelpMessage(): String
+  + getFormat(): String
+}
+
+class CommandResult {
+  # additionalData: CommandParser
+  # isOk: boolean
+  # isExit: boolean
+  + isExit(): boolean
+  + getAdditionalData(): CommandParser
+}
+
+class Ui
+!includesub Module.puml!MODULEMANAGER
+!includesub ParserClassDiagram.puml!COMMANDPARSER
+@enduml

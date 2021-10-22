@@ -26,7 +26,7 @@
     * [4.3 Workspace]()
     * [4.4 Adding and Deleting Content]()
     * [4.5 Storage](#45-storage-implementation)
-        + [4.5.1 Initialize Storage](#451-initialize-storage-implementation)
+      + [4.5.1 Initialize Storage](#451-initialize-storage-implementation)
 - [5. Documentation, Logging, Testing and DevOps]()
 - [Appendix A: Product Scope]()
 - [Appendix B: User Stories ]()
@@ -135,57 +135,55 @@ Import the coding style xml file into your IntelliJ IDEA.
 ### 3.2 UI Component
 
 ### 3.3 Parser Component
-
 ![](attachments/ParserClassDiagram.png)
 
-The CommandParser Component consist the the `CommandParser` and multiple `XYZCommandParser`, each
-representing a specific type command parser. The `CommandParser` will receive a command in
-`parseCommand` function and check the according `HashMap<String, Command>` before returning the
-according `Command` object back.
+The CommandParser Component consist the the `CommandParser` and multiple `XYZCommandParser`,
+each representing a specific type command parser. The `CommandParser` will receive a command in
+`parseCommand` function and check the according `HashMap<String, Command>` before
+returning the according `Command` object back.
 
 The `CommandParser` implements the following functionality:
-
 - parsing the command string and giving the respective `Command` object
 - Keeps track of the workspace
 - Provides functionality to list all commands for the help `Command`
 
-### 3.4 Command Component
 
+### 3.4 Command Component
 ![](attachments/CommandClassDiagram.png)
 
 The Command Component `Command` class, `CommandResult` class and multiple `XYZCommand`
-each representing a specific type of command. Each `Command` will `parseArguments` and set them to
-private variables, and then `execute` would run specific operation specified by `XYZCommand`.
-The `Command` would then modify the required changes in `ModuleManager` and print the required to be
-output to `Ui` before returning a `CommandResult`.
+each representing a specific type of command. Each `Command` will `parseArguments` and set them
+to private variables, and then `execute` would run specific operation specified by `XYZCommand`.
+The `Command` would then modify the required changes in `ModuleManager` and
+print the required to be output to `Ui` before returning a `CommandResult`.
 
 The `CommandResult` will contains certain attributes to indicate if the `Terminus` loop should be
 terminated or if the `CommandParser` might require changing through the `additionData` attribute.
 The `CommandParser` maybe used to change workspace.
+
 
 ### 3.5 Module Component
 
 ![](attachments/Module.png)
 
 The Module Components consists of the `ModuleManager` which contains a collection of `NusModule` and
-maps a module name to a specific `NusModule`. The `NusModule` consist of `ContentManager` which help
-to manage `Content`. The `ContentManager` accepts a `Content` type generic which is from the Content
-Component
+maps a module name to a specific `NusModule`.
+The `NusModule` consist of `ContentManager` which help to manage `Content`.
+The `ContentManager` accepts a `Content` type generic which is from the Content Component
 
 The `ModuleManager` implements the below functionality:
-
 - add, delete or retrieve a specific `NusModule`
 - list all module names
 - grants access to the different types of content stored by `NusModule`
 
 ### 3.6 Content Component
-
 ![](attachments/Content.png)
 
 The Content Component consist of objects such as `Link`, `Question` and `Note`
 which inherit from the abstract `Content` class. The `ContentManager` allows a generic
 `<T extends Content>` which must belong to the `Content` type or its children. The
 `ContentManager` manages an `ArrayList` of Content type and provide the following functionality:
+
 
 - adding of any Content type
 - removing any Content
@@ -195,16 +193,16 @@ which inherit from the abstract `Content` class. The `ContentManager` allows a g
 - accessing the arraylist of contents
 
 ### 3.7 Active Recall Component
-
 ![Active Recall Class Diagram](attachments/ActiveRecallClassDiagram.png)
 
 The Active Recall Component consists of the `GameEnvironment` as the centre of the design.
 The `GameEnvironment` consists of a `QuestionGenerator` which will only exist if there is a
 `GameEnvironment`, and a `Ui` instance to handle user input and printing of information. The
 decision to re-use the `Ui` is to allow easier upgrades to the `Ui` if there is a need in the
-future. The `QuestionGenerator` takes in a list of `Question` and a maximum question count to
-randomly generate questions based on `Random`. If `Random` is not provided, a new `Random` with a
-random seed will be created to generate the `Question` order.  
+future.
+The `QuestionGenerator` takes in a list of `Question` and a maximum question count to randomly
+generate questions based on `Random`. If `Random` is not provided, a new `Random` with a random seed
+will be created to generate the `Question` order.  
 The `DifficultyModifier` is a utility class used to calculate and tweak the weights of `Question`
 after the user has provided feedback on the difficulty of the question. It uses a
 [logistic curve](https://en.wikipedia.org/wiki/Logistic_function) to calculate the change in weight.
@@ -213,6 +211,7 @@ For further details on the implementation, head to
 [4.2 Active Recall Implementation](#42-active-recall-implementation).
 
 ### 3.8 Storage Component
+
 
 ![](attachments/StorageComponent.png)
 
@@ -227,6 +226,7 @@ The `ModuleStorage` component:
 `TermiNUS` saved these data as either a `.json` or `.txt` file so users will be able to edit saved
 data easily with any available text editor.
 
+
 ## 4. Implementation
 
 ### 4.1 Timetable
@@ -234,27 +234,23 @@ data easily with any available text editor.
 The `timetable` feature is one of TermiNUS' features which can be accessed from the main workspace.
 
 The `timetable` feature has 2 variations:
-
 - **Daily** Timetable
 - **Weekly** timetable.
 
 The following sequence diagram shows how the timetable operation works:
 ![](attachments/Timetable.png)
 
-The **Daily** and **Weekly** `timetable` feature differs by a user argument which is parsed as
-the `day`.
+The **Daily** and **Weekly** `timetable` feature differs by a user argument which is parsed as the `day`.
 
-The **Daily** `timetable` feature works by iterating through a collection of `NusModule` which are
-stored inside a `ModuleManager`. Within the `NusModule`, the `ContentManager`, which stores all
-the `Link` is accessed. All the `Link` inside `ContentManager` is iterated through to acquire all
-the schedule which has the same attribute `day` as the user argument.
+The **Daily** `timetable` feature works by iterating through a collection of `NusModule` which are stored inside a `ModuleManager`.
+Within the `NusModule`, the `ContentManager`, which stores all the `Link` is accessed.
+All the `Link` inside `ContentManager` is iterated through to acquire all the schedule which has the same attribute `day` as the user argument.
 
-The **Weekly** `timetable` feature is an extension of the **Daily** `timetable` feature. It is
-implemented by iterating through a `DaysOfWeekEnum` and acquires the **daily** `timetable` for each
-day in the week.
+The **Weekly** `timetable` feature is an extension of the **Daily** `timetable` feature.
+It is implemented by iterating through a `DaysOfWeekEnum` and acquires the **daily** `timetable` for each day in the week.
+
 
 ### 4.2 Active Recall Implementation
-
 ![Active Recall Sequence Diagram](attachments/ActiveRecallSequenceDiagram.png)
 
 To view the high-level diagram, head to
@@ -273,7 +269,6 @@ The newly created `GameEnvironment` will be returned to `TestCommand` where it w
 method within the object.
 
 The `run()` method consists of 4 main steps (with step 2 to 4 repeating for every question):
-
 1. `showPreGameInformation()`
 2. `promptQuestion()`
 3. `getUserFeedback()`
@@ -381,5 +376,3 @@ be ignored.
 
 Lastly, after `ModuleStorage` has loaded all content data for all `modules` in the ModuleManager, it
 will return the `ModuleManager` back to `Terminus` for further operations.
-
-

@@ -1,0 +1,73 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+participant ":Terminus" as Terminus
+participant ":ModuleStorage" as ModuleStorage
+
+ref over Terminus
+Refer to main program flow.
+end
+activate Terminus
+|||
+Terminus -> Terminus : start()
+activate Terminus
+|||
+Terminus -> ModuleStorage : getInstance()
+activate ModuleStorage
+  opt ModuleStorage has not been created yet
+    ModuleStorage -> ModuleStorage : ModuleStorage()
+    activate ModuleStorage
+    return moduleStorage: ModuleStorage
+  end
+  return moduleStorage: ModuleStorage
+Terminus -> ModuleStorage : init(:Path)
+note left: passes the filepath of the main json file
+activate ModuleStorage
+Deactivate ModuleStorage
+Terminus -> ModuleStorage : loadFile()
+activate ModuleStorage
+ModuleStorage -> ModuleStorage : initializeFile();
+  activate ModuleStorage
+    note right: create files accordingly for first time run
+  return
+  alt json file is not readable
+    |||
+    ref over ModuleStorage
+      Fatal error, return null
+    end
+  else else
+    ref over ModuleStorage
+      load json data into ModuleManager using GsonBuilder
+    end
+    ModuleStorage -> ModuleStorage : loadAllNotes(moduleManager:ModuleManager)
+    activate ModuleStorage
+      loop each module item in moduleManager
+        ref over ModuleStorage
+          Refer to valid Module Name Section
+        end
+        note right: filter module from json file
+        |||
+        alt module name is not valid
+          ModuleStorage -> ModuleManager : removeMod(mod:String)
+        else else
+          alt module folder does not exists
+            ModuleStorage -> : Files.createDirectories(modDirPath: Path);
+          else else
+            ModuleStorage -> ModuleStorage : loadNotesFromModule(moduleManager:ModuleManager, mod:String)
+            activate ModuleStorage
+            ref over ModuleStorage
+              Refer to Reload Notes Command Section.
+            end
+            return
+          end
+          return
+        end
+        return : ModuleManager
+      end
+  end
+
+
+
+
+
+@enduml

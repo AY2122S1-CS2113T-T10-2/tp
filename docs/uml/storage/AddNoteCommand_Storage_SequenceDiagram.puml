@@ -1,0 +1,34 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+participant ":AddNoteCommand" as AddNoteCommand
+participant ":ModuleStorage" as ModuleStorage
+
+-> AddNoteCommand : execute(ui, moduleManager)
+activate AddNoteCommand
+  ref over AddNoteCommand
+    Refer to Add Note Command Section
+  end
+    |||
+  AddNoteCommand -> ModuleStorage : getInstance()
+  activate ModuleStorage
+    |||
+    return :ModuleStorage
+  AddNoteCommand -> AddNoteCommand : getModuleName()
+  activate AddNoteCommand
+  return moduleName:String
+  AddNoteCommand -> ModuleStorage : addNoteFromModule(moduleName:String, newNote: Note)
+  activate ModuleStorage
+    |||
+    opt module folder does not exists
+      ModuleStorage -> : Files.createDirectories(filepath:Path)
+    end
+    ModuleStorage -> ModuleStorage :createNoteFile(modDirPath:Path, newNote:Note)
+    activate ModuleStorage
+    ModuleStorage -> : Files.writeString(filePath: Path, note.getData():String)
+  Deactivate ModuleStorage
+
+return CommandResult(isOk: Boolean)
+Deactivate AddNoteCommand
+|||
+@enduml

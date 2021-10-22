@@ -17,9 +17,9 @@ activate DeleteModuleCommand
   DeleteModuleCommand -> ModuleStorage : cleanAfterDeleteModule(:String)
   activate ModuleStorage
     |||
-    alt file does not exists
+    alt folder does not exists
       ref over ModuleStorage
-        File is already deleted.
+        Folder is already deleted.
         Return.
       end
     else else
